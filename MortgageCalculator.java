@@ -1,61 +1,50 @@
 package com.h2;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
+import java.text.DecimalFormat;
 
-public class SavingsCalculator {
-    private float[] credits;
-    private float[] debits;
+public class MortgageCalculator {
+    private long loanAmount;
+    private int termInYears;
+    private float annualRate;
+    private double monthlyPayment;
 
-    public SavingsCalculator(float[] credits, float[] debits) {
-        this.credits = credits;
-        this.debits = debits;
+    public MortgageCalculator(long loanAmount, int termInYears, float annualRate) {
+        this.loanAmount = loanAmount;
+        this.termInYears = termInYears;
+        this.annualRate = annualRate;
     }
 
-    private float sumOfCredits() {
-        float sum = 0.0f;
-        for(float credit: credits) {
-            sum += credit;
-        }
-        return sum;
+    private int getNumberOfPayments() {
+        return termInYears * 12;
     }
 
-    private float sumOfDebits() {
-        float sum = 0.0f;
-        for(float debit: debits) {
-            sum += debit;
-        }
-        return sum;
+    private float getMonthlyInterestRate() {
+        float interestRate = annualRate / 100;
+        return interestRate / 12;
     }
 
-    private static int remainingDaysInMonth(LocalDate date) {
-        YearMonth yearMonth = YearMonth.of(date.getYear(), date.getMonth());
-        int totalDaysInMonth = yearMonth.lengthOfMonth();
-        int remainingDays = totalDaysInMonth - date.getDayOfMonth();
-        return remainingDays;
+    public void calculateMonthlyPayment() {
+        long P = loanAmount;
+        float r = getMonthlyInterestRate();
+        int n = getNumberOfPayments();
+
+        double M = P * (((r * Math.pow(1 + r, n))) / ((Math.pow((1 + r), n)) - 1));
+        this.monthlyPayment = M;
     }
 
-    public float calculate() {
-        return sumOfCredits() - sumOfDebits();
+    public String toString() {
+        DecimalFormat df = new DecimalFormat("####0.00");
+        return "monthlyPayment: " + df.format(monthlyPayment);
     }
 
     public static void main(String[] args) {
-        final String[] creditsAsString = args[0].split(",");
-        final String[] debitsAsString = args[1].split(",");
+        long loanAmount = Long.parseLong(args[0]);
+        int termInYears = Integer.parseInt(args[1]);
+        float annualRate = Float.parseFloat(args[2]);
 
-        final float[] credits = new float[creditsAsString.length];
-        final float[] debits = new float[debitsAsString.length];
-
-        for (int i = 0; i < creditsAsString.length; i++) {
-            credits[i] = Float.parseFloat(creditsAsString[i]);
-        }
-
-        for (int i = 0; i < debitsAsString.length; i++) {
-            debits[i] = Float.parseFloat(debitsAsString[i]);
-        }
-
-        final SavingsCalculator calculator = new SavingsCalculator(credits, debits);
-        float netSavings = calculator.calculate();
-        System.out.println("Net Savings = " + netSavings + ", remaining days in month = " + remainingDaysInMonth(LocalDate.now()));
+        MortgageCalculator calculator = new MortgageCalculator(loanAmount, termInYears, annualRate);
+        calculator.calculateMonthlyPayment();
+        System.out.println(calculator.toString());
     }
+
 }
