@@ -11,7 +11,7 @@ public class BestLoanRates {
     );
     public static void main (String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter you name");
+        System.out.println("Enter your name");
         String name = scanner.nextLine();
         System.out.println("Hello" + name);
 
@@ -19,9 +19,9 @@ public class BestLoanRates {
         int loanTermInYears = scanner.nextInt();
         float bestRate = getRates(loanTermInYears);
         if(bestRate == 0.0f) {
-            System.out.println("No available rates for term: " + loanTermInYears + "years");
+            System.out.println("No available rates for term: " + loanTermInYears + " years");
         } else {
-            System.out.println("Best available rate " + getRates(loanTermInYears) + "%");
+            System.out.println("Best Available Rate: " + getRates(loanTermInYears) + "%");
         }
         scanner.close();
     }
